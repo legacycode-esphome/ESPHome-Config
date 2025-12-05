@@ -1,0 +1,57 @@
+# Gemeinsame Komponenten für erweiterte Konfiguration
+# Diese Datei enthält zusätzliche Features, die die Basis-Pakete erweitern
+
+# ESPHome Core-Konfiguration überschreiben
+esphome:
+  name: ${devicename}
+  friendly_name: ${friendly_name}
+  comment: ${device_comment}
+  name_add_mac_suffix: false
+
+# Logger-Konfiguration (INFO für normale Logs, DEBUG für Fehlersuche)
+logger:
+  level: INFO
+
+# WiFi-Konfiguration überschreiben
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  min_auth_mode: WPA2  # Nur sichere Verschlüsselung akzeptieren
+  # Fallback-AP wenn WiFi-Verbindung fehlschlägt
+  ap:
+    ssid: "${friendly_name} Fallback"
+    password: !secret ap_password
+
+# API mit Verschlüsselung überschreiben
+api:
+  encryption:
+    key: !secret encryption_key
+
+# Zeit von Home Assistant synchronisieren
+time:
+  - platform: homeassistant
+    id: homeassistant_time
+
+# OTA-Updates mit Passwort aktivieren
+ota:
+  - platform: esphome
+    password: !secret ota_password
+
+# MQTT-Unterstützung aktivieren
+mqtt:
+  broker: !secret mqtt_broker
+  discovery: false
+  # Topic-Präfix: Alle Geräte unter esphome/${friendly_name}
+  topic_prefix: esphome/${friendly_name}
+
+# Web-Server aktivieren
+web_server:
+  port: 80
+
+# Captive Portal aktivieren (Fallback-Konfiguration bei WiFi-Problemen)
+captive_portal:
+
+# Restart-Button für Fernwartung
+button:
+  - platform: restart
+    name: "${friendly_name} Restart"
