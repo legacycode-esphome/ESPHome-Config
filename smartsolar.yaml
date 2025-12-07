@@ -1,0 +1,52 @@
+substitutions:
+  # Der interne Name, der von ESPHome verwendet wird (klein, ohne Leerzeichen, Bindestriche OK)
+  devicename: "smartsolar"
+
+  # Der Anzeigename in Home Assistant (ohne Umlaute für MQTT-Kompatibilität)
+  friendly_name: "SmartSolar"
+
+  # Beschreibung, was dieses Gerät macht
+  device_comment: "Victron SmartSolar MPPT Laderegler"
+
+# Remote extensions (API encryption, OTA, MQTT, Web Server, Captive Portal)
+packages:
+  common:
+    url: https://github.com/legacycode/ESPHome-Config.git
+    file: common.yaml
+    ref: main
+    refresh: 1d
+
+# Board-Konfiguration (Wemos D1 Mini)
+esp8266:
+  board: d1_mini
+
+# Externe Komponente für Victron MPPT
+external_components:
+  - source: github://KinDR007/VictronMPPT-ESPHOME@main
+
+# UART-Konfiguration für Victron VE.Direct
+uart:
+  id: uart_0
+  tx_pin: D6  # Nicht verwendet! Die Kommunikation ist nur lesend
+  rx_pin: D7
+  baud_rate: 19200
+  rx_buffer_size: 256
+
+# Victron Platform
+victron:
+  id: victron0
+  uart_id: uart_0
+
+# Victron Sensoren
+sensor:
+  - platform: victron
+    victron_id: victron0
+    panel_voltage:
+      name: "${friendly_name} Panel Spannung"
+      icon: "mdi:solar-panel"
+    battery_voltage:
+      name: "${friendly_name} Batterie Spannung"
+      icon: "mdi:battery-charging"
+    battery_current:
+      name: "${friendly_name} Batterie Strom"
+      icon: "mdi:current-dc"
