@@ -12,6 +12,7 @@ Dieses Repository enthält ESPHome-Konfigurationsdateien für verschiedene Smart
 ├── secrets.yaml.example     # Vorlage für Secrets (wird ins Repository committed)
 ├── secrets.yaml             # Echte Secrets (wird NICHT committed, siehe .gitignore)
 ├── power-meter.yaml         # Stromzähler-Konfiguration (SML)
+├── gas-meter.yaml           # Gaszähler-Konfiguration (Reed-Kontakt)
 ├── smartsolar.yaml          # Victron SmartSolar MPPT Laderegler
 ├── smartshunt.yaml          # Victron SmartShunt Batteriemonitor
 └── .gitignore              # Schützt secrets.yaml vor versehentlichem Commit
@@ -106,6 +107,28 @@ SML-Stromzähler Ausleser auf Wemos D1 Mini:
   - Einspeisung gesamt (OBIS 1-0:2.8.0)
   - Aktuelle Wirkleistung (OBIS 1-0:16.7.0)
   - Stromzähler-ID (OBIS 1-0:96.1.0)
+
+### gas-meter.yaml
+
+Gaszähler-Ausleser mit Reed-Kontakt auf Wemos D1 Mini:
+
+- **Board:** ESP8266 (d1_mini)
+- **Reed-Kontakt:** GPIO4 (mit Pullup)
+- **Remote Packages:** github://legacycode/ESPHome-Gas-Meter
+- **Konfiguration:**
+  - `pulses_per_cubic_meter: "100"` - Impulse pro m³
+  - `initial_meter_offset: "0"` - Initialer Zählerstand-Offset
+- **Sensoren:**
+  - Durchflussrate (m³/h)
+  - Gesamt (m³)
+  - Gesamtimpulse
+  - Zählerstand mit Offset (m³)
+  - WiFi-Signal, Betriebszeit
+- **Funktionen:**
+  - LED-Blinken bei Impuls (3s)
+  - Impulszähler zurücksetzen (Button)
+  - Zählerstand-Offset konfigurierbar (Number)
+  - Persistente Speicherung der Impulse
 
 ### smartsolar.yaml
 
