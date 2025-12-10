@@ -51,6 +51,9 @@ web_server:
 # Captive Portal aktivieren (Fallback-Konfiguration bei WiFi-Problemen)
 captive_portal:
 
+# Debug-Komponente aktivieren
+debug:
+
 # Restart-Button für Fernwartung
 button:
   - platform: restart
@@ -71,6 +74,27 @@ sensor:
     update_interval: 60s
     entity_category: diagnostic
 
+  # Debug-Sensoren
+  - platform: debug
+    free:
+      name: "${friendly_name} Freier Speicher"
+      entity_category: diagnostic
+    fragmentation:
+      name: "${friendly_name} Heap Fragmentierung"
+      entity_category: diagnostic
+    block:
+      name: "${friendly_name} Groesster freier Block"
+      entity_category: diagnostic
+    loop_time:
+      name: "${friendly_name} Loop Zeit"
+      entity_category: diagnostic
+    psram:
+      name: "${friendly_name} Freier PSRAM"
+      entity_category: diagnostic
+    cpu_frequency:
+      name: "${friendly_name} CPU Frequenz"
+      entity_category: diagnostic
+
 # Text-Sensoren
 text_sensor:
   # WLAN-Konfiguration
@@ -88,6 +112,15 @@ text_sensor:
   - platform: version
     name: "${friendly_name} ESPHome Version"
     entity_category: diagnostic
+
+  # Debug Text-Sensoren
+  - platform: debug
+    device:
+      name: "${friendly_name} Geraeteinformationen"
+      entity_category: diagnostic
+    reset_reason:
+      name: "${friendly_name} Neustart Grund"
+      entity_category: diagnostic
 
 # Binary-Sensoren
 binary_sensor:
