@@ -50,18 +50,9 @@ sensor:
     auxiliary_battery_voltage:
       name: "${friendly_name} Hilfsbatterie Spannung"
       icon: "mdi:battery-outline"
-    midpoint_voltage_of_the_battery_bank:
-      name: "${friendly_name} Batteriebank Mittelspannung"
-      icon: "mdi:battery-medium"
-    midpoint_deviation_of_the_battery_bank:
-      name: "${friendly_name} Batteriebank Abweichung"
-      icon: "mdi:battery-alert-variant-outline"
     battery_current:
       name: "${friendly_name} Batterie Strom"
       icon: "mdi:current-dc"
-    battery_temperature:
-      name: "${friendly_name} Batterie Temperatur"
-      icon: "mdi:thermometer"
     instantaneous_power:
       name: "${friendly_name} Momentanleistung"
       icon: "mdi:flash"
@@ -83,12 +74,6 @@ sensor:
     depth_of_the_average_discharge:
       name: "${friendly_name} Durchschnittliche Entladung"
       icon: "mdi:battery-50"
-    number_of_charge_cycles:
-      name: "${friendly_name} Anzahl Ladezyklen"
-      icon: "mdi:counter"
-    number_of_full_discharges:
-      name: "${friendly_name} Anzahl Vollentladungen"
-      icon: "mdi:battery-off"
     cumulative_amp_hours_drawn:
       name: "${friendly_name} Kumulierte Ah entnommen"
       icon: "mdi:battery-minus-outline"
@@ -101,21 +86,6 @@ sensor:
     last_full_charge:
       name: "${friendly_name} Letzte Vollladung"
       icon: "mdi:battery-charging-100"
-    number_of_automatic_synchronizations:
-      name: "${friendly_name} Anzahl Auto-Sync"
-      icon: "mdi:sync"
-    number_of_low_main_voltage_alarms:
-      name: "${friendly_name} Anzahl Unterspannungsalarme"
-      icon: "mdi:alert-outline"
-    number_of_high_main_voltage_alarms:
-      name: "${friendly_name} Anzahl Ueberspannungsalarme"
-      icon: "mdi:alert-outline"
-    number_of_low_auxiliary_voltage_alarms:
-      name: "${friendly_name} Anzahl Unterspannungsalarme Hilfs"
-      icon: "mdi:alert-outline"
-    number_of_high_auxiliary_voltage_alarms:
-      name: "${friendly_name} Anzahl Ueberspannungsalarme Hilfs"
-      icon: "mdi:alert-outline"
     min_auxiliary_battery_voltage:
       name: "${friendly_name} Min Hilfsbatterie Spannung"
       icon: "mdi:battery-low"
@@ -148,32 +118,12 @@ sensor:
 text_sensor:
   - platform: victron
     victron_id: victron0
-    alarm_condition_active:
-      name: "${friendly_name} Alarm Bedingung"
-      icon: "mdi:alarm-light"
-    alarm_reason:
-      name: "${friendly_name} Alarm Grund"
-      icon: "mdi:alert-circle"
     model_description:
       name: "${friendly_name} Modellbeschreibung"
       icon: "mdi:information"
     firmware_version:
       name: "${friendly_name} Firmware Version"
       icon: "mdi:chip"
-    device_type:
-      name: "${friendly_name} Geraetetyp"
-      icon: "mdi:information"
-    serial_number:
-      name: "${friendly_name} Seriennummer"
-      icon: "mdi:identifier"
     dc_monitor_mode:
       name: "${friendly_name} DC Monitor Modus"
       icon: "mdi:monitor-dashboard"
-
-# Victron Binary-Sensoren
-binary_sensor:
-  - platform: victron
-    victron_id: victron0
-    relay_state:
-      name: "${friendly_name} Relais Status"
-      icon: "mdi:electric-switch"
