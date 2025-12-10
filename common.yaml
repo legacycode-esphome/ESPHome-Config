@@ -77,16 +77,12 @@ text_sensor:
   - platform: wifi_info
     ssid:
       name: "${friendly_name} WiFi SSID"
-      entity_category: config
     bssid:
       name: "${friendly_name} WiFi BSSID"
-      entity_category: config
     ip_address:
       name: "${friendly_name} IP Adresse"
-      entity_category: config
     mac_address:
       name: "${friendly_name} MAC Adresse"
-      entity_category: config
 
   # ESPHome Version
   - platform: version
