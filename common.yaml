@@ -88,9 +88,6 @@ sensor:
     loop_time:
       name: "${friendly_name} Loop Zeit"
       entity_category: diagnostic
-    psram:
-      name: "${friendly_name} Freier PSRAM"
-      entity_category: diagnostic
     cpu_frequency:
       name: "${friendly_name} CPU Frequenz"
       entity_category: diagnostic
