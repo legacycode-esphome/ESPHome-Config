@@ -55,3 +55,47 @@ captive_portal:
 button:
   - platform: restart
     name: "${friendly_name} Restart"
+    entity_category: diagnostic
+
+# Diagnostic-Sensoren
+sensor:
+  # WiFi Signal Stärke
+  - platform: wifi_signal
+    name: "${friendly_name} WiFi Signal"
+    update_interval: 60s
+    entity_category: diagnostic
+
+  # Betriebszeit seit letztem Neustart
+  - platform: uptime
+    name: "${friendly_name} Betriebszeit"
+    update_interval: 60s
+    entity_category: diagnostic
+
+# Text-Sensoren
+text_sensor:
+  # WLAN-Konfiguration
+  - platform: wifi_info
+    ssid:
+      name: "${friendly_name} WiFi SSID"
+      entity_category: config
+    bssid:
+      name: "${friendly_name} WiFi BSSID"
+      entity_category: config
+    ip_address:
+      name: "${friendly_name} IP Adresse"
+      entity_category: config
+    mac_address:
+      name: "${friendly_name} MAC Adresse"
+      entity_category: config
+
+  # ESPHome Version
+  - platform: version
+    name: "${friendly_name} ESPHome Version"
+    entity_category: diagnostic
+
+# Binary-Sensoren
+binary_sensor:
+  # Verbindungsstatus
+  - platform: status
+    name: "${friendly_name} Status"
+    entity_category: diagnostic
