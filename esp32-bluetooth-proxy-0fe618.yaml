@@ -1,0 +1,29 @@
+# ESP32-S3 Bluetooth Proxy (Garage)
+
+substitutions:
+  devicename: "bt-proxy-0fe618"
+  friendly_name: "BT Proxy Garage"
+
+# Bluetooth Proxy Package von ESPHome
+packages:
+  esphome.bluetooth-proxy: github://esphome/bluetooth-proxies/esp32-generic/esp32-generic-s3.yaml@main
+
+esphome:
+  name: ${devicename}
+  name_add_mac_suffix: false
+  friendly_name: ${friendly_name}
+
+# API mit gemeinsamem Encryption Key
+api:
+  encryption:
+    key: !secret encryption_key
+
+# OTA mit Passwort
+ota:
+  - platform: esphome
+    password: !secret ota_password
+
+# WiFi-Konfiguration
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password

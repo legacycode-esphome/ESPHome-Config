@@ -8,14 +8,16 @@ Dieses Repository enthält ESPHome-Konfigurationsdateien für verschiedene Smart
 
 ```
 .
-├── common.yaml              # Gemeinsame Basis-Konfiguration (WiFi, API, OTA, MQTT, etc.)
-├── secrets.yaml.example     # Vorlage für Secrets (wird ins Repository committed)
-├── secrets.yaml             # Echte Secrets (wird NICHT committed, siehe .gitignore)
-├── power-meter.yaml         # Stromzähler-Konfiguration (SML)
-├── gas-meter.yaml           # Gaszähler-Konfiguration (Reed-Kontakt)
-├── smartsolar.yaml          # Victron SmartSolar MPPT Laderegler
-├── smartshunt.yaml          # Victron SmartShunt Batteriemonitor
-└── .gitignore              # Schützt secrets.yaml vor versehentlichem Commit
+├── common.yaml                          # Gemeinsame Basis-Konfiguration (WiFi, API, OTA, MQTT, etc.)
+├── secrets.yaml.example                 # Vorlage für Secrets (wird ins Repository committed)
+├── secrets.yaml                         # Echte Secrets (wird NICHT committed, siehe .gitignore)
+├── power-meter.yaml                     # Stromzähler-Konfiguration (SML)
+├── gas-meter.yaml                       # Gaszähler-Konfiguration (Reed-Kontakt)
+├── smartsolar.yaml                      # Victron SmartSolar MPPT Laderegler
+├── smartshunt.yaml                      # Victron SmartShunt Batteriemonitor
+├── esp32-bluetooth-proxy-0fe080.yaml   # Bluetooth Proxy (Büro)
+├── esp32-bluetooth-proxy-0fe618.yaml   # Bluetooth Proxy (Garage)
+└── .gitignore                          # Schützt secrets.yaml vor versehentlichem Commit
 ```
 
 ## Sicherheitskonzept
@@ -195,9 +197,50 @@ Victron SmartShunt Batteriemonitor auf Wemos D1 Mini:
   - `amount_of_charged_energy` → Energie IN die Batterie (kWh)
   - `amount_of_discharged_energy` → Energie AUS der Batterie (kWh)
 
+### esp32-bluetooth-proxy-0fe080.yaml
+
+ESP32-S3 Bluetooth Proxy (Büro):
+
+- **Board:** ESP32-S3 Generic
+- **Package:** github://esphome/bluetooth-proxies/esp32-generic/esp32-generic-s3.yaml@main
+- **Standort:** Büro
+- **Friendly Name:** "BT Proxy Buero"
+- **Device Name:** bt-proxy-0fe080
+- **Features:**
+  - Bluetooth Proxy mit 3 aktiven Verbindungen
+  - Scan Duration: 300s
+  - Scan Interval: 320ms, Window: 30ms
+  - Active Scanning
+  - Continuous Scanning
+- **Secrets:**
+  - API Encryption: `!secret encryption_key`
+  - OTA Password: `!secret ota_password`
+  - WiFi: `!secret wifi_ssid`, `!secret wifi_password`
+
+### esp32-bluetooth-proxy-0fe618.yaml
+
+ESP32-S3 Bluetooth Proxy (Garage):
+
+- **Board:** ESP32-S3 Generic
+- **Package:** github://esphome/bluetooth-proxies/esp32-generic/esp32-generic-s3.yaml@main
+- **Standort:** Garage
+- **Friendly Name:** "BT Proxy Garage"
+- **Device Name:** bt-proxy-0fe618
+- **Features:**
+  - Bluetooth Proxy mit 3 aktiven Verbindungen
+  - Scan Duration: 300s
+  - Scan Interval: 320ms, Window: 30ms
+  - Active Scanning
+  - Continuous Scanning
+- **Secrets:**
+  - API Encryption: `!secret encryption_key`
+  - OTA Password: `!secret ota_password`
+  - WiFi: `!secret wifi_ssid`, `!secret wifi_password`
+
 ## Hinweise für Claude
 
 - Vor Commits IMMER `esphome config` ausführen
+- **CLAUDE.md vor jedem Push aktualisieren!**
 - Keine Secrets in YAML-Dateien hardcoden
 - Für Validierung Test-Secrets verwenden (secrets.yaml wird nicht committed)
 - Keine Co-Authorship in Git-Commits
