@@ -19,19 +19,22 @@ packages:
     ref: main
     refresh: 0s
 
-# Board-Konfiguration (Wemos D1 Mini)
-esp8266:
-  board: d1_mini
+# Board-Konfiguration (M5Stack AtomS3)
+esp32:
+  board: m5stack-atoms3
+  variant: esp32s3
+  framework:
+    type: arduino
 
 # Externe Komponente für Victron
 external_components:
   - source: github://KinDR007/VictronMPPT-ESPHOME@main
 
 # UART-Konfiguration für Victron VE.Direct
+# Nur RX-Pin, da VE.Direct Text Protocol read-only ist
 uart:
   id: uart_0
-  tx_pin: D6  # Nicht verwendet! Die Kommunikation ist nur lesend
-  rx_pin: D7
+  rx_pin: GPIO1
   baud_rate: 19200
   rx_buffer_size: 256
 

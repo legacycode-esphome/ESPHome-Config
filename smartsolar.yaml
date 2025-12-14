@@ -19,9 +19,12 @@ packages:
     ref: main
     refresh: 0s
 
-# Board-Konfiguration (Wemos D1 Mini)
-esp8266:
-  board: d1_mini
+# Board-Konfiguration (M5Stack AtomS3)
+esp32:
+  board: m5stack-atoms3
+  variant: esp32s3
+  framework:
+    type: arduino
 
 # Externe Komponente für Victron MPPT
 external_components:
@@ -29,10 +32,10 @@ external_components:
 
 # UART-Konfiguration für Victron VE.Direct
 # Nur RX-Pin, da VE.Direct Text Protocol read-only ist
-# TX-Pin (D6) wird für Remote On/Off verwendet (siehe switch unten)
+# GPIO2 wird für Remote On/Off verwendet (siehe switch unten)
 uart:
   id: uart_0
-  rx_pin: D7
+  rx_pin: GPIO1
   baud_rate: 19200
   rx_buffer_size: 256
 
@@ -146,7 +149,7 @@ binary_sensor:
 # LOW (GND) = Ladegeraet AUS
 switch:
   - platform: gpio
-    pin: D6  # GPIO12 - verbunden mit Victron RX
+    pin: GPIO2  # verbunden mit Victron RX
     name: "${friendly_name} Remote On/Off"
     icon: "mdi:power"
     restore_mode: ALWAYS_ON  # Nach Neustart eingeschaltet

@@ -107,11 +107,14 @@ Die `common.yaml` enthält:
 **Text-Sensoren:**
 - WiFi SSID, BSSID, IP Adresse, MAC Adresse
 - ESPHome Version
+- Neustart Grund (reset_reason)
 
 **Binary-Sensoren:**
 - Status (Verbindungsstatus)
 
 **Wichtig:** Nach Hinzufügen neuer Sensoren zur `common.yaml` müssen Geräte in Home Assistant möglicherweise gelöscht und neu hinzugefügt werden, damit die Discovery korrekt funktioniert. Die Sensoren erscheinen dann in der Diagnostic-Sektion.
+
+**Hinweis:** ESP8266-spezifische Debug-Sensoren (free memory, heap fragmentation, etc.) wurden entfernt für ESP32-Kompatibilität.
 
 ## Geräte
 
@@ -151,10 +154,15 @@ Gaszähler-Ausleser mit Reed-Kontakt auf Wemos D1 Mini:
 
 ### smartsolar.yaml
 
-Victron SmartSolar MPPT Laderegler auf Wemos D1 Mini:
+Victron SmartSolar MPPT Laderegler auf M5Stack AtomS3 Lite:
 
-- **Board:** ESP8266 (d1_mini)
-- **UART:** RX=D7 (GPIO13), TX=D6 (GPIO12), 19200 Baud
+- **Board:** ESP32-S3 (m5stack-atoms3)
+- **UART:** RX=GPIO1, 19200 Baud (nur RX, da VE.Direct Text Protocol read-only ist)
+- **Remote On/Off:** GPIO2 steuert Victron RX-Pin für ferngesteuertes Ein-/Ausschalten
+  - HIGH (3.3V) = Gerät EIN
+  - LOW (GND) = Gerät AUS
+  - `restore_mode: ALWAYS_ON` - Gerät bleibt nach Neustart eingeschaltet
+- **Port-Buchse:** G (GND), 5V, G2 (GPIO2), G1 (GPIO1)
 - **Externe Komponente:** github://KinDR007/VictronMPPT-ESPHOME@main
 - **Beispielkonfiguration:** https://github.com/KinDR007/VictronMPPT-ESPHOME/blob/main/smartsolar-mppt-esp8266-example.yaml
 - **Sensoren (14):**
@@ -172,10 +180,11 @@ Victron SmartSolar MPPT Laderegler auf Wemos D1 Mini:
 
 ### smartshunt.yaml
 
-Victron SmartShunt Batteriemonitor auf Wemos D1 Mini:
+Victron SmartShunt Batteriemonitor auf M5Stack AtomS3 Lite:
 
-- **Board:** ESP8266 (d1_mini)
-- **UART:** RX=D7 (GPIO13), TX=D6 (GPIO12), 19200 Baud
+- **Board:** ESP32-S3 (m5stack-atoms3)
+- **UART:** RX=GPIO1, 19200 Baud (nur RX, da VE.Direct Text Protocol read-only ist)
+- **Port-Buchse:** G (GND), 5V, G2 (GPIO2), G1 (GPIO1)
 - **Externe Komponente:** github://KinDR007/VictronMPPT-ESPHOME@main
 - **Beispielkonfiguration:** https://github.com/KinDR007/VictronMPPT-ESPHOME/blob/main/smartshunt-esp8266-example.yaml
 - **Sensoren (29):**
