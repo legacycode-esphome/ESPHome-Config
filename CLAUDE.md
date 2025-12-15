@@ -212,20 +212,25 @@ ESP32-S3 Bluetooth Proxy (Garage):
 
 - **Board:** ESP32-S3 (M5Stack AtomS3 Lite)
 - **Board-Konfiguration:** m5stack-atoms3, variant: esp32s3, framework: arduino
-- **Package:** github://esphome/bluetooth-proxies/esp32-generic/esp32-generic-s3.yaml@main
+- **Packages:**
+  - Bluetooth Proxy: github://esphome/bluetooth-proxies/esp32-generic/esp32-generic-s3.yaml@main
+  - Common: github://legacycode/ESPHome-Config (WiFi, API, OTA, MQTT, Web Server, etc.)
 - **Standort:** Garage
 - **Friendly Name:** "BT Proxy Garage"
 - **Device Name:** bt-proxy-0fe080
-- **Features:**
+- **Bluetooth Features:**
   - Bluetooth Proxy mit 3 aktiven Verbindungen
   - Scan Duration: 300s
   - Scan Interval: 320ms, Window: 30ms
   - Active Scanning
   - Continuous Scanning
-- **Secrets:**
-  - API Encryption: `!secret encryption_key`
-  - OTA Password: `!secret ota_password`
-  - WiFi: `!secret wifi_ssid`, `!secret wifi_password`
+- **Common Features:**
+  - MQTT-Integration
+  - Web-Server (Port 80)
+  - Captive Portal
+  - Zeit-Synchronisation (Home Assistant)
+  - Diagnostic-Sensoren (WiFi Signal, Betriebszeit, WiFi Info, Version, Reset Reason, Status)
+  - Restart-Button
 
 ## Hinweise für Claude
 
