@@ -15,8 +15,7 @@ Dieses Repository enthält ESPHome-Konfigurationsdateien für verschiedene Smart
 ├── gas-meter.yaml                       # Gaszähler-Konfiguration (Reed-Kontakt)
 ├── smartsolar.yaml                      # Victron SmartSolar MPPT Laderegler
 ├── smartshunt.yaml                      # Victron SmartShunt Batteriemonitor
-├── esp32-bluetooth-proxy-0fe080.yaml   # Bluetooth Proxy (Büro)
-├── esp32-bluetooth-proxy-0fe618.yaml   # Bluetooth Proxy (Garage)
+├── esp32-bluetooth-proxy-0fe080.yaml   # Bluetooth Proxy (Garage)
 └── .gitignore                          # Schützt secrets.yaml vor versehentlichem Commit
 ```
 
@@ -209,33 +208,13 @@ Victron SmartShunt Batteriemonitor auf M5Stack AtomS3 Lite:
 
 ### esp32-bluetooth-proxy-0fe080.yaml
 
-ESP32-S3 Bluetooth Proxy (Büro):
-
-- **Board:** ESP32-S3 Generic
-- **Package:** github://esphome/bluetooth-proxies/esp32-generic/esp32-generic-s3.yaml@main
-- **Standort:** Büro
-- **Friendly Name:** "BT Proxy Buero"
-- **Device Name:** bt-proxy-0fe080
-- **Features:**
-  - Bluetooth Proxy mit 3 aktiven Verbindungen
-  - Scan Duration: 300s
-  - Scan Interval: 320ms, Window: 30ms
-  - Active Scanning
-  - Continuous Scanning
-- **Secrets:**
-  - API Encryption: `!secret encryption_key`
-  - OTA Password: `!secret ota_password`
-  - WiFi: `!secret wifi_ssid`, `!secret wifi_password`
-
-### esp32-bluetooth-proxy-0fe618.yaml
-
 ESP32-S3 Bluetooth Proxy (Garage):
 
 - **Board:** ESP32-S3 Generic
 - **Package:** github://esphome/bluetooth-proxies/esp32-generic/esp32-generic-s3.yaml@main
 - **Standort:** Garage
 - **Friendly Name:** "BT Proxy Garage"
-- **Device Name:** bt-proxy-0fe618
+- **Device Name:** bt-proxy-0fe080
 - **Features:**
   - Bluetooth Proxy mit 3 aktiven Verbindungen
   - Scan Duration: 300s
