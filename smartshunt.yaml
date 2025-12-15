@@ -50,21 +50,31 @@ sensor:
     battery_voltage:
       name: "${friendly_name} Batterie Spannung"
       icon: "mdi:battery-charging"
+      device_class: voltage
+      state_class: measurement
     auxiliary_battery_voltage:
       name: "${friendly_name} Hilfsbatterie Spannung"
       icon: "mdi:battery-outline"
+      device_class: voltage
+      state_class: measurement
     battery_current:
       name: "${friendly_name} Batterie Strom"
       icon: "mdi:current-dc"
+      device_class: current
+      state_class: measurement
     instantaneous_power:
       name: "${friendly_name} Momentanleistung"
       icon: "mdi:flash"
+      device_class: power
+      state_class: measurement
     consumed_amp_hours:
       name: "${friendly_name} Verbrauchte Ah"
       icon: "mdi:battery-minus"
     state_of_charge:
       name: "${friendly_name} Ladezustand"
       icon: "mdi:battery-70"
+      device_class: battery
+      state_class: measurement
     time_to_go:
       name: "${friendly_name} Restlaufzeit"
       icon: "mdi:timer-outline"
@@ -83,18 +93,26 @@ sensor:
     min_battery_voltage:
       name: "${friendly_name} Min Batterie Spannung"
       icon: "mdi:battery-low"
+      device_class: voltage
+      state_class: measurement
     max_battery_voltage:
       name: "${friendly_name} Max Batterie Spannung"
       icon: "mdi:battery-high"
+      device_class: voltage
+      state_class: measurement
     last_full_charge:
       name: "${friendly_name} Letzte Vollladung"
       icon: "mdi:battery-charging-100"
     min_auxiliary_battery_voltage:
       name: "${friendly_name} Min Hilfsbatterie Spannung"
       icon: "mdi:battery-low"
+      device_class: voltage
+      state_class: measurement
     max_auxiliary_battery_voltage:
       name: "${friendly_name} Max Hilfsbatterie Spannung"
       icon: "mdi:battery-high"
+      device_class: voltage
+      state_class: measurement
     amount_of_discharged_energy:
       name: "${friendly_name} Entladene Energie"
       icon: "mdi:battery-arrow-down"

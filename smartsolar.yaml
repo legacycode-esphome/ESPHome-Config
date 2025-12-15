@@ -51,15 +51,23 @@ sensor:
     panel_voltage:
       name: "${friendly_name} Panel Spannung"
       icon: "mdi:solar-panel"
+      device_class: voltage
+      state_class: measurement
     panel_power:
       name: "${friendly_name} Panel Leistung"
       icon: "mdi:solar-power"
+      device_class: power
+      state_class: measurement
     battery_voltage:
       name: "${friendly_name} Batterie Spannung"
       icon: "mdi:battery-charging"
+      device_class: voltage
+      state_class: measurement
     battery_current:
       name: "${friendly_name} Batterie Strom"
       icon: "mdi:current-dc"
+      device_class: current
+      state_class: measurement
     yield_total:
       name: "${friendly_name} Ertrag Gesamt"
       icon: "mdi:counter"
@@ -90,9 +98,13 @@ sensor:
     max_power_today:
       name: "${friendly_name} Max Leistung Heute"
       icon: "mdi:solar-power-variant"
+      device_class: power
+      state_class: measurement
     max_power_yesterday:
       name: "${friendly_name} Max Leistung Gestern"
       icon: "mdi:solar-power-variant"
+      device_class: power
+      state_class: measurement
     day_number:
       name: "${friendly_name} Tag Nummer"
       icon: "mdi:calendar-today"
@@ -108,6 +120,8 @@ sensor:
     load_current:
       name: "${friendly_name} Last Strom"
       icon: "mdi:current-dc"
+      device_class: current
+      state_class: measurement
 
 # Victron Text-Sensoren
 text_sensor:
