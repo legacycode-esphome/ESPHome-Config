@@ -166,17 +166,19 @@ Victron SmartSolar MPPT Laderegler auf M5Stack AtomS3 Lite:
 - **Externe Komponente:** github://KinDR007/VictronMPPT-ESPHOME@main
 - **Beispielkonfiguration:** https://github.com/KinDR007/VictronMPPT-ESPHOME/blob/main/smartsolar-mppt-esp8266-example.yaml
 - **Sensoren (14):**
-  - Panel Spannung/Leistung
-  - Batterie Spannung/Strom
-  - Ertrag (Gesamt, Heute, Gestern) in kWh
-  - Max Leistung (Heute, Gestern)
+  - Panel Spannung/Leistung (mit device_class: voltage/power, state_class: measurement)
+  - Batterie Spannung/Strom (mit device_class: voltage/current, state_class: measurement)
+  - Ertrag (Gesamt, Heute, Gestern) in kWh (mit device_class: energy, state_class: total_increasing)
+  - Max Leistung (Heute, Gestern) (mit device_class: power, state_class: measurement)
   - Tag Nummer, Lademodus ID, Fehlercode, Tracking Modus ID
-  - Last Strom
+  - Last Strom (mit device_class: current, state_class: measurement)
 - **Text-Sensoren (6):**
   - Lademodus, Tracking Modus, Fehler
   - Firmware Version, Gerätetyp, Seriennummer
 - **Binary-Sensoren (2):**
   - Last Status, Relais Status
+- **Switch (1):**
+  - Remote On/Off (steuert Gerät über Victron RX-Pin)
 
 ### smartshunt.yaml
 
@@ -187,24 +189,23 @@ Victron SmartShunt Batteriemonitor auf M5Stack AtomS3 Lite:
 - **Port-Buchse:** G (GND), 5V, G2 (GPIO2), G1 (GPIO1)
 - **Externe Komponente:** github://KinDR007/VictronMPPT-ESPHOME@main
 - **Beispielkonfiguration:** https://github.com/KinDR007/VictronMPPT-ESPHOME/blob/main/smartshunt-esp8266-example.yaml
-- **Sensoren (29):**
-  - Batterie Spannung/Strom/Temperatur/Ladezustand
-  - Hilfsbatterie Spannung (Min/Max)
-  - Batteriebank Mittelspannung/Abweichung
-  - Momentanleistung, Verbrauchte Ah, Restlaufzeit
+- **Sensoren (~15):**
+  - Batterie Spannung/Strom/Ladezustand (mit device_class: voltage/current/battery, state_class: measurement)
+  - Hilfsbatterie Spannung (mit device_class: voltage, state_class: measurement)
+  - Momentanleistung (mit device_class: power, state_class: measurement)
+  - Verbrauchte Ah, Restlaufzeit
   - Entladungstiefen (Tiefste, Letzte, Durchschnittlich)
-  - Ladezyklen, Vollentladungen
-  - Energie geladen/entladen in kWh
-  - Alarm-Zähler (Über-/Unterspannung)
-- **Text-Sensoren (7):**
-  - Alarm Bedingung/Grund
-  - Modellbeschreibung, Firmware Version, Gerätetyp, Seriennummer
-  - DC Monitor Modus
-- **Binary-Sensoren (1):**
-  - Relais Status
+  - Min/Max Batterie Spannung (mit device_class: voltage, state_class: measurement)
+  - Min/Max Hilfsbatterie Spannung (mit device_class: voltage, state_class: measurement)
+  - Energie geladen/entladen in kWh (mit device_class: energy, state_class: total_increasing)
+  - DC Monitor Modus ID
+  - Letzte Vollladung, Kumulierte Ah entnommen
+- **Text-Sensoren (3):**
+  - Modellbeschreibung, Firmware Version, DC Monitor Modus
 - **Energy Dashboard:**
   - `amount_of_charged_energy` → Energie IN die Batterie (kWh)
   - `amount_of_discharged_energy` → Energie AUS der Batterie (kWh)
+- **Hinweis:** Kein Remote On/Off Switch (im Gegensatz zum SmartSolar)
 
 ### esp32-bluetooth-proxy-0fe080.yaml
 
