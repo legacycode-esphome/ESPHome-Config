@@ -17,6 +17,7 @@ Dieses Repository enthält ESPHome-Konfigurationsdateien für verschiedene Smart
 ├── smartshunt.yaml                      # Victron SmartShunt Batteriemonitor
 ├── esp32-bluetooth-proxy-garage.yaml    # Bluetooth Proxy (Garage)
 ├── esp32-bluetooth-proxy-buero.yaml     # Bluetooth Proxy (Büro)
+├── ac-bedroom.yaml                      # Mitsubishi Klimaanlage Schlafzimmer (CN105)
 └── .gitignore                          # Schützt secrets.yaml vor versehentlichem Commit
 ```
 
@@ -60,6 +61,8 @@ In `secrets.yaml` müssen folgende Werte definiert sein:
 
 **Hinweis:** `refresh: 0s` lädt die Remote-Packages bei jedem Kompilieren neu. Die ESP-Geräte aktualisieren sich **nicht automatisch** - du musst nach Änderungen manuell neu kompilieren und flashen.
 
+**WICHTIG:** Änderungen an `common.yaml` müssen zuerst committed und gepusht werden, bevor sie beim Kompilieren anderer Geräte wirksam werden, da diese `common.yaml` als Remote-Package von GitHub laden.
+
 ### Vor jedem Commit
 
 **PFLICHT:** Konfiguration validieren:
@@ -82,6 +85,35 @@ git push
 ```
 
 **WICHTIG:** Keine Co-Authorship von Claude in Commits.
+
+**Git Remote:** Nutzt SSH-Host `github-code` statt `github.com` (konfiguriert in SSH-Config).
+
+## Namenskonventionen
+
+### Sensor-Namen
+
+Sensor-Namen werden **ohne** `${friendly_name}` Prefix definiert. ESPHome stellt den Gerätenamen (`friendly_name`) automatisch voran.
+
+```yaml
+# RICHTIG
+name: "Leistungsaufnahme"        # → "Klima Schlafzimmer Leistungsaufnahme" in HA
+
+# FALSCH (führt zu Dopplung)
+name: "${friendly_name} Leistungsaufnahme"  # → "Klima Schlafzimmer Klima Schlafzimmer Leistungsaufnahme"
+```
+
+### MQTT Topics
+
+Geräte mit Leerzeichen im `friendly_name` müssen das MQTT-Topic explizit überschreiben:
+
+```yaml
+mqtt:
+  topic_prefix: esphome/${devicename}  # statt esphome/${friendly_name}
+```
+
+### Fallback-AP SSID
+
+Die SSID `"${friendly_name} Fallback"` darf maximal 32 Zeichen haben. Bei langen Namen den `friendly_name` kürzen.
 
 ## Common Configuration
 
@@ -112,9 +144,7 @@ Die `common.yaml` enthält:
 **Binary-Sensoren:**
 - Status (Verbindungsstatus)
 
-**Wichtig:** Nach Hinzufügen neuer Sensoren zur `common.yaml` müssen Geräte in Home Assistant möglicherweise gelöscht und neu hinzugefügt werden, damit die Discovery korrekt funktioniert. Die Sensoren erscheinen dann in der Diagnostic-Sektion.
-
-**Hinweis:** ESP8266-spezifische Debug-Sensoren (free memory, heap fragmentation, etc.) wurden entfernt für ESP32-Kompatibilität.
+**Wichtig:** Nach Hinzufügen neuer Sensoren zur `common.yaml` müssen Geräte in Home Assistant möglicherweise gelöscht und neu hinzugefügt werden, damit die Discovery korrekt funktioniert.
 
 ## Geräte
 
@@ -136,7 +166,7 @@ Gaszähler-Ausleser mit Reed-Kontakt auf Wemos D1 Mini:
 
 - **Board:** ESP8266 (d1_mini)
 - **Reed-Kontakt:** GPIO4 (mit Pullup)
-- **Remote Packages:** github://legacycode/ESPHome-Gas-Meter
+- **Remote Packages:** github://legacycode-esphome/ESPHome-Gas-Meter
 - **Konfiguration:**
   - `pulses_per_cubic_meter: "100"` - Impulse pro m³
   - `initial_meter_offset: "0"` - Initialer Zählerstand-Offset
@@ -145,7 +175,6 @@ Gaszähler-Ausleser mit Reed-Kontakt auf Wemos D1 Mini:
   - Gesamt (m³)
   - Gesamtimpulse
   - Zählerstand mit Offset (m³)
-  - WiFi-Signal, Betriebszeit
 - **Funktionen:**
   - LED-Blinken bei Impuls (3s)
   - Impulszähler zurücksetzen (Button)
@@ -156,108 +185,74 @@ Gaszähler-Ausleser mit Reed-Kontakt auf Wemos D1 Mini:
 
 Victron SmartSolar MPPT Laderegler auf M5Stack AtomS3 Lite:
 
-- **Board:** ESP32-S3 (m5stack-atoms3)
-- **UART:** RX=GPIO1, 19200 Baud (nur RX, da VE.Direct Text Protocol read-only ist)
-- **Remote On/Off:** GPIO2 steuert Victron RX-Pin für ferngesteuertes Ein-/Ausschalten
-  - HIGH (3.3V) = Gerät EIN
-  - LOW (GND) = Gerät AUS
-  - `restore_mode: ALWAYS_ON` - Gerät bleibt nach Neustart eingeschaltet
-- **Port-Buchse:** G (GND), 5V, G2 (GPIO2), G1 (GPIO1)
+- **Board:** ESP32-S3 (m5stack-atoms3), Framework: arduino
+- **UART:** RX=GPIO1, 19200 Baud (nur RX, VE.Direct read-only)
+- **Remote On/Off:** GPIO2 steuert Victron RX-Pin
 - **Externe Komponente:** github://KinDR007/VictronMPPT-ESPHOME@main
-- **Beispielkonfiguration:** https://github.com/KinDR007/VictronMPPT-ESPHOME/blob/main/smartsolar-mppt-esp8266-example.yaml
-- **Sensoren (14):**
-  - Panel Spannung/Leistung (mit device_class: voltage/power, state_class: measurement)
-  - Batterie Spannung/Strom (mit device_class: voltage/current, state_class: measurement)
-  - Ertrag (Gesamt, Heute, Gestern) in kWh (mit device_class: energy, state_class: total_increasing)
-  - Max Leistung (Heute, Gestern) (mit device_class: power, state_class: measurement)
-  - Tag Nummer, Lademodus ID, Fehlercode, Tracking Modus ID
-  - Last Strom (mit device_class: current, state_class: measurement)
-- **Text-Sensoren (6):**
-  - Lademodus, Tracking Modus, Fehler
-  - Firmware Version, Gerätetyp, Seriennummer
-- **Binary-Sensoren (2):**
-  - Last Status, Relais Status
-- **Switch (1):**
-  - Remote On/Off (steuert Gerät über Victron RX-Pin)
+- **Sensoren:** Panel Spannung/Leistung, Batterie Spannung/Strom, Ertrag (Gesamt/Heute/Gestern), Max Leistung, Lademodus, Fehlercode
+- **Switch:** Remote On/Off
 
 ### smartshunt.yaml
 
 Victron SmartShunt Batteriemonitor auf M5Stack AtomS3 Lite:
 
-- **Board:** ESP32-S3 (m5stack-atoms3)
-- **UART:** RX=GPIO1, 19200 Baud (nur RX, da VE.Direct Text Protocol read-only ist)
-- **Port-Buchse:** G (GND), 5V, G2 (GPIO2), G1 (GPIO1)
+- **Board:** ESP32-S3 (m5stack-atoms3), Framework: arduino
+- **UART:** RX=GPIO1, 19200 Baud (nur RX, VE.Direct read-only)
 - **Externe Komponente:** github://KinDR007/VictronMPPT-ESPHOME@main
-- **Beispielkonfiguration:** https://github.com/KinDR007/VictronMPPT-ESPHOME/blob/main/smartshunt-esp8266-example.yaml
-- **Sensoren (~15):**
-  - Batterie Spannung/Strom/Ladezustand (mit device_class: voltage/current/battery, state_class: measurement)
-  - Hilfsbatterie Spannung (mit device_class: voltage, state_class: measurement)
-  - Momentanleistung (mit device_class: power, state_class: measurement)
-  - Verbrauchte Ah, Restlaufzeit
-  - Entladungstiefen (Tiefste, Letzte, Durchschnittlich)
-  - Min/Max Batterie Spannung (mit device_class: voltage, state_class: measurement)
-  - Min/Max Hilfsbatterie Spannung (mit device_class: voltage, state_class: measurement)
-  - Energie geladen/entladen in kWh (mit device_class: energy, state_class: total_increasing)
-  - DC Monitor Modus ID
-  - Letzte Vollladung, Kumulierte Ah entnommen
-- **Text-Sensoren (3):**
-  - Modellbeschreibung, Firmware Version, DC Monitor Modus
-- **Energy Dashboard:**
-  - `amount_of_charged_energy` → Energie IN die Batterie (kWh)
-  - `amount_of_discharged_energy` → Energie AUS der Batterie (kWh)
-- **Hinweis:** Kein Remote On/Off Switch (im Gegensatz zum SmartSolar)
+- **Sensoren:** Batterie Spannung/Strom/Ladezustand, Momentanleistung, Energie geladen/entladen (kWh), Min/Max Spannungen
+- **Energy Dashboard:** `amount_of_charged_energy` / `amount_of_discharged_energy`
 
 ### esp32-bluetooth-proxy-garage.yaml
 
 ESP32-S3 Bluetooth Proxy (Garage):
 
-- **Board:** ESP32-S3 (M5Stack AtomS3 Lite)
-- **Board-Konfiguration:** m5stack-atoms3, variant: esp32s3, framework: arduino
-- **Packages:**
-  - Bluetooth Proxy: github://esphome/bluetooth-proxies/esp32-generic/esp32-generic-s3.yaml@main
-  - Common: github://legacycode/ESPHome-Config (WiFi, API, OTA, MQTT, Web Server, etc.)
-- **Standort:** Garage
-- **Friendly Name:** "BT Proxy Garage"
+- **Board:** ESP32-S3 (m5stack-atoms3), Framework: arduino
+- **Packages:** github://esphome/bluetooth-proxies + Common
 - **Device Name:** bt-proxy-garage
-- **Bluetooth Features:**
-  - Bluetooth Proxy mit 3 aktiven Verbindungen
-  - Scan Duration: 300s
-  - Scan Interval: 320ms, Window: 30ms
-  - Active Scanning
-  - Continuous Scanning
-- **Common Features:**
-  - MQTT-Integration (Topic: esphome/bt-proxy-garage)
-  - Web-Server (Port 80)
-  - Captive Portal
-  - Zeit-Synchronisation (Home Assistant)
-  - Diagnostic-Sensoren (WiFi Signal, Betriebszeit, WiFi Info, Version, Reset Reason, Status)
-  - Restart-Button
+- **MQTT Topic:** esphome/bt-proxy-garage
 
 ### esp32-bluetooth-proxy-buero.yaml
 
 ESP32-S3 Bluetooth Proxy (Büro):
 
-- **Board:** ESP32-S3 (M5Stack AtomS3 Lite)
-- **Board-Konfiguration:** m5stack-atoms3, variant: esp32s3, framework: arduino
-- **Packages:**
-  - Bluetooth Proxy: github://esphome/bluetooth-proxies/esp32-generic/esp32-generic-s3.yaml@main
-  - Common: github://legacycode/ESPHome-Config (WiFi, API, OTA, MQTT, Web Server, etc.)
-- **Standort:** Büro
-- **Friendly Name:** "BT Proxy Buero"
+- **Board:** ESP32-S3 (m5stack-atoms3), Framework: arduino
+- **Packages:** github://esphome/bluetooth-proxies + Common
 - **Device Name:** bt-proxy-buero
-- **Bluetooth Features:**
-  - Bluetooth Proxy mit 3 aktiven Verbindungen
-  - Scan Duration: 300s
-  - Scan Interval: 320ms, Window: 30ms
-  - Active Scanning
-  - Continuous Scanning
-- **Common Features:**
-  - MQTT-Integration (Topic: esphome/bt-proxy-buero)
-  - Web-Server (Port 80)
-  - Captive Portal
-  - Zeit-Synchronisation (Home Assistant)
-  - Diagnostic-Sensoren (WiFi Signal, Betriebszeit, WiFi Info, Version, Reset Reason, Status)
-  - Restart-Button
+- **MQTT Topic:** esphome/bt-proxy-buero
+
+### ac-bedroom.yaml
+
+Mitsubishi MSZ-HR35VF Klimaanlage Schlafzimmer auf M5Stack AtomS3 Lite:
+
+- **Board:** ESP32-S3 (m5stack-atoms3), Framework: esp-idf
+- **UART:** TX=GPIO1, RX=GPIO2, 2400 Baud (CN105-Protokoll)
+- **Externe Komponente:** github://echavet/MitsubishiCN105ESPHome
+- **Device Name:** ac-bedroom
+- **Friendly Name:** Klima Schlafzimmer
+- **MQTT Topic:** esphome/ac-bedroom
+- **Climate-Entity:**
+  - Name: "Betriebsart"
+  - Modi: AUTO, COOL, HEAT, DRY, FAN_ONLY
+  - Lüfter: AUTO, QUIET, LOW, MEDIUM, HIGH
+  - Swing: OFF, VERTICAL
+  - Temperaturbereich: 16-31°C (Schrittweite 1°C)
+  - Update-Intervall: 2s, Debounce: 100ms
+- **Sensoren:**
+  - Leistungsaufnahme (W, power, measurement)
+  - Kompressor Frequenz (Hz, frequency, measurement)
+  - Energieverbrauch (kWh, energy, total_increasing)
+  - Betriebsstunden (h, diagnostic)
+  - Verbindungszeit (s, diagnostic)
+- **Text-Sensoren:**
+  - Betriebsstufe (diagnostic)
+  - Sub-Modus (diagnostic)
+  - Auto Sub-Modus (diagnostic)
+- **Steuerung:**
+  - Lamellen Vertikal (select)
+- **Hinweise:**
+  - CN105 ist der interne Stecker der Mitsubishi-Inneneinheit (bidirektional, kein IR)
+  - Horizontale Lamellen nicht vorhanden bei MSZ-HR35VF
+  - Außentemperatur-Sensor liefert ungenaue Werte (40°C konstant), daher nicht eingebunden
 
 ## Hinweise für Claude
 
@@ -267,3 +262,8 @@ ESP32-S3 Bluetooth Proxy (Büro):
 - Für Validierung Test-Secrets verwenden (secrets.yaml wird nicht committed)
 - Keine Co-Authorship in Git-Commits
 - Bestehende Konventionen in common.yaml beachten
+- Sensor-Namen ohne `${friendly_name}` Prefix (ESPHome stellt Gerätenamen automatisch voran)
+- Bei Geräten mit Leerzeichen im friendly_name: MQTT-Topic auf `${devicename}` überschreiben
+- Fallback-AP SSID maximal 32 Zeichen (`${friendly_name} Fallback`)
+- `common.yaml` Änderungen erst pushen, bevor andere Geräte neu kompiliert werden
+- Git Remote nutzt SSH-Host `github-code` (nicht `github.com`)

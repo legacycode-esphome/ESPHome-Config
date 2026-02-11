@@ -1,0 +1,99 @@
+# Klimaanlage Schlafzimmer
+
+substitutions:
+  devicename: "ac-bedroom"
+  friendly_name: "Klima Schlafzimmer"
+  device_comment: "Mitsubishi MSZ-HR35VF - Klimaanlage Schlafzimmer"
+
+# Remote extensions (API encryption, OTA, MQTT, Web Server, Captive Portal)
+packages:
+  common:
+    url: https://github.com/legacycode-esphome/ESPHome-Config.git
+    file: common.yaml
+    ref: main
+    refresh: 0s
+
+# Board-Konfiguration (M5Stack AtomS3)
+esp32:
+  board: m5stack-atoms3
+  variant: esp32s3
+  framework:
+    type: esp-idf
+    version: recommended
+
+# MQTT Topic ohne Leerzeichen
+mqtt:
+  topic_prefix: esphome/${devicename}
+
+# Externe Komponente fuer Mitsubishi CN105
+external_components:
+  - source: github://echavet/MitsubishiCN105ESPHome
+
+# UART-Konfiguration fuer CN105
+uart:
+  id: HP_UART
+  baud_rate: 2400
+  tx_pin: GPIO1
+  rx_pin: GPIO2
+
+# Klimaanlage
+climate:
+  - platform: cn105
+    id: hp
+    name: "Betriebsart"
+    icon: mdi:heat-pump
+    uart_id: HP_UART
+    update_interval: 2s
+    debounce_delay: 100ms
+    visual:
+      min_temperature: 16
+      max_temperature: 31
+      temperature_step:
+        target_temperature: 1
+        current_temperature: 0.5
+    supports:
+      mode: [AUTO, COOL, HEAT, DRY, FAN_ONLY]
+      fan_mode: [AUTO, QUIET, LOW, MEDIUM, HIGH]
+      swing_mode: ["OFF", VERTICAL]
+    # Sensoren
+    input_power_sensor:
+      name: "Leistungsaufnahme"
+      unit_of_measurement: W
+      device_class: power
+      state_class: measurement
+    compressor_frequency_sensor:
+      name: "Kompressor Frequenz"
+      unit_of_measurement: Hz
+      device_class: frequency
+      state_class: measurement
+    kwh_sensor:
+      name: "Energieverbrauch"
+      unit_of_measurement: kWh
+      device_class: energy
+      state_class: total_increasing
+    runtime_hours_sensor:
+      name: "Betriebsstunden"
+      unit_of_measurement: h
+      entity_category: diagnostic
+    hp_uptime_connection_sensor:
+      name: "Verbindungszeit"
+      unit_of_measurement: s
+      entity_category: diagnostic
+    # Text-Sensoren
+    stage_sensor:
+      name: "Betriebsstufe"
+      entity_category: diagnostic
+    sub_mode_sensor:
+      name: "Sub-Modus"
+      entity_category: diagnostic
+    auto_sub_mode_sensor:
+      name: "Auto Sub-Modus"
+      entity_category: diagnostic
+    # Steuerung
+    vertical_vane_select:
+      name: "Lamellen Vertikal"
+
+logger:
+  logs:
+    CN105: INFO
+    EVT_SETS: INFO
