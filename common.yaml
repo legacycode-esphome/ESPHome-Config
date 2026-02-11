@@ -57,20 +57,20 @@ debug:
 # Restart-Button für Fernwartung
 button:
   - platform: restart
-    name: "${friendly_name} Restart"
+    name: "Restart"
     entity_category: diagnostic
 
 # Diagnostic-Sensoren
 sensor:
   # WiFi Signal Stärke
   - platform: wifi_signal
-    name: "${friendly_name} WiFi Signal"
+    name: "WiFi Signal"
     update_interval: 60s
     entity_category: diagnostic
 
   # Betriebszeit seit letztem Neustart
   - platform: uptime
-    name: "${friendly_name} Betriebszeit"
+    name: "Betriebszeit"
     update_interval: 60s
     entity_category: diagnostic
 
@@ -79,28 +79,28 @@ text_sensor:
   # WLAN-Konfiguration
   - platform: wifi_info
     ssid:
-      name: "${friendly_name} WiFi SSID"
+      name: "WiFi SSID"
     bssid:
-      name: "${friendly_name} WiFi BSSID"
+      name: "WiFi BSSID"
     ip_address:
-      name: "${friendly_name} IP Adresse"
+      name: "IP Adresse"
     mac_address:
-      name: "${friendly_name} MAC Adresse"
+      name: "MAC Adresse"
 
   # ESPHome Version
   - platform: version
-    name: "${friendly_name} ESPHome Version"
+    name: "ESPHome Version"
     entity_category: diagnostic
 
   # Debug Text-Sensoren
   - platform: debug
     reset_reason:
-      name: "${friendly_name} Neustart Grund"
+      name: "Neustart Grund"
       entity_category: diagnostic
 
 # Binary-Sensoren
 binary_sensor:
   # Verbindungsstatus
   - platform: status
-    name: "${friendly_name} Status"
+    name: "Status"
     entity_category: diagnostic
